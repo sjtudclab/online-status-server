@@ -7,7 +7,7 @@ if [ -f "$JSVC_PID_FILE" ]; then
   exit 1
 fi
 
-echo 'Starting Daemon $DEAMON_NAME in Background.'
+echo 'Starting Daemon $DAEMON_NAME in Background.'
 
 $JSVC_EXECUTABLE -server -cp "$JAVA_CLASSPATH" -user "$JSVC_USER" \
   -pidfile $JSVC_PID_FILE -procname "kvstore" $JAVA_OPTS $JAVA_MAIN_CLASS

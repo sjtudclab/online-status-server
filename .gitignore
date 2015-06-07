@@ -3,11 +3,13 @@
 /.project
 /.classpath
 /.springBeans
+/.idea
 
 *.class
 *.jar
 *.war
 *.ear
+online-status-server.iml
 
 .DS_Store
 bin/

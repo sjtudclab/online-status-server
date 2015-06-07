@@ -1,9 +1,9 @@
 #!/bin/bash
 
-DEAMON_NAME=online-status-server
+DAEMON_NAME=online-status-server
 
 JSVC_EXECUTABLE="$( which jsvc )"
-JSVC_PID_FILE="/tmp/$DEAMON_NAME.pid"
+JSVC_PID_FILE="/tmp/$DAEMON_NAME.pid"
 
 if [ -z "$JSVC_USER" ]; then
   JSVC_USER="$USER"
@@ -14,7 +14,7 @@ LIB_DIR="$DIST_DIR/lib"
 CONF_DIR="$DIST_DIR/conf"
 
 JAVA_EXEC="$( which java )"
-JAVA_CLASSPATH="$LIB_DIR/$DEAMON_NAME.jar"
+JAVA_CLASSPATH="$LIB_DIR/$DAEMON_NAME.jar"
 JAVA_MAIN_CLASS="cn.edu.sjtu.se.kvstore.db.KVDaemon"
 JAVA_OPTS="-Ddistribution.dir=$DIST_DIR"
 
