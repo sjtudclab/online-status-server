@@ -28,7 +28,7 @@
       <fileMode>0755</fileMode>
     </fileSet>
     <fileSet>
-      <directory>src/main/resources</directory>
+      <directory>src/main/conf</directory>
       <outputDirectory>/conf</outputDirectory>
       <directoryMode>755</directoryMode>
       <fileMode>0744</fileMode>
