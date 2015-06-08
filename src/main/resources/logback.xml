@@ -36,10 +36,4 @@
 		<appender-ref ref="FILE" />
 	</root>
 
-	<logger name="cn.edu.sjtu.se.dclab">
-        <level value="DEBUG" />
-        <appender-ref ref="STDOUT" />
-        <appender-ref ref="FILE" />
-    </logger>
-
 </configuration>

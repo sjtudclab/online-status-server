@@ -18,6 +18,9 @@
     <junit.version>4.11</junit.version>
     <daemon.version>1.0.15</daemon.version>
     <rabbitmq.client.version>3.5.3</rabbitmq.client.version>
+    <redis.client.version>1.2.1</redis.client.version>
+    <jackson.version>2.5.2</jackson.version>
+    <thrift.version>0.9.2</thrift.version>
   </properties>
 
   <dependencies>
@@ -34,7 +37,40 @@
       <groupId>com.rabbitmq</groupId>
       <artifactId>amqp-client</artifactId>
       <version>${rabbitmq.client.version}</version>
-  </dependency>
+    </dependency>
+
+    <!-- redis client -->
+    <dependency>
+      <groupId>org.redisson</groupId>
+      <artifactId>redisson</artifactId>
+      <version>${redis.client.version}</version>
+    </dependency>
+
+    <!-- thrift support -->
+    <dependency>
+      <groupId>org.apache.thrift</groupId>
+      <artifactId>libthrift</artifactId>
+      <version>${thrift.version}</version>
+    </dependency>
+
+    <!-- jackson support -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
 
     <!-- log -->
     <dependency>

@@ -7,7 +7,7 @@
   </formats>  
   <dependencySets>
     <dependencySet>
-      <useProjectArtifact>true</useProjectArtifact>
+      <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>lib</outputDirectory>
       <directoryMode>0755</directoryMode>
     </dependencySet>
@@ -19,6 +19,13 @@
       <fileMode>0744</fileMode>
       <includes>
         <include>README.md</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>target</directory>
+      <outputDirectory>/lib</outputDirectory>
+      <includes>
+        <include>*.jar</include>
       </includes>
     </fileSet>
     <fileSet>

@@ -4,6 +4,7 @@
 /.classpath
 /.springBeans
 /.idea
+/online-status-server
 
 *.class
 *.jar

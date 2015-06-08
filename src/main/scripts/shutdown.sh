@@ -3,7 +3,7 @@
 . "$( dirname "${BASH_SOURCE[0]}" )/env.sh"
 
 if [ ! -f "$JSVC_PID_FILE" ]; then
-  echo "Daemon not running." >&2
+  echo "$DAEMON_NAME not running." >&2
   exit 1
 fi
 
