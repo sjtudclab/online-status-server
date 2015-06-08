@@ -7,7 +7,7 @@ if [ ! -f "$JSVC_PID_FILE" ]; then
   exit 1
 fi
 
-echo 'Stopping Daemon $DAEMON_NAME...'
+echo "Stopping Daemon $DAEMON_NAME..."
 
 $JSVC_EXECUTABLE -server -stop -cp "$JAVA_CLASSPATH" -user "$JSVC_USER" \
   -pidfile $JSVC_PID_FILE $JAVA_OPTS $JAVA_MAIN_CLASS

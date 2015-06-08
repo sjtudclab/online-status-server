@@ -35,10 +35,6 @@ import static cn.edu.sjtu.se.dclab.oss.util.TimeUtil.now;
 public class OnlineStatusServer {
     private static Logger LOG = LoggerFactory.getLogger(OnlineStatusServer.class);
 
-    private final int CONNECTION_POOL_SIZE = 3;
-    private final int EXPIRE_TIME = 600;
-    private final int SERVER_PORT = 5555;
-
     // Redis client
     private Redisson redisson;
 
@@ -57,26 +53,24 @@ public class OnlineStatusServer {
         LOG.info("Initializing redis client...");
         Config conf = new Config();
         conf.useSingleServer()
-                .setAddress("192.168.1.254:6379")
-                .setConnectionPoolSize(CONNECTION_POOL_SIZE);
+            .setAddress("192.168.1.254:6379")
+            .setConnectionPoolSize(Constants.REDIS_CONNECTION_POOL_SIZE);
 
         redisson = Redisson.create(conf);
-        LOG.info("Initializing redis completed...");
+        LOG.info("Initializing redis client completed...");
     }
 
     private void initThriftServer() {
         try {
             // init & start thrift server
-            TServerSocket serverSocket = new TServerSocket(SERVER_PORT);
+            TServerSocket serverSocket = new TServerSocket(Constants.THRIFT_SERVER_PORT);
             TProcessor processor = new OnlineStatusQueryService.Processor<>(queryService);
             server = new TThreadPoolServer(new TThreadPoolServer.Args(serverSocket).processor(processor));
-            LOG.info("Starting server on port " + SERVER_PORT);
+            LOG.info("Starting server on port " + Constants.THRIFT_SERVER_PORT);
             server.serve();
 
             // register service to zookeeper
             String localIp = InetAddress.getLocalHost().getHostAddress();
-
-
 
         } catch (UnknownHostException ex) {
             LOG.debug(ex.getMessage());
@@ -145,7 +139,7 @@ public class OnlineStatusServer {
         removeExpiredClients(map, now());
         map.putIfAbsent(userId, bucket);
         map.clearExpire();
-        map.expire(EXPIRE_TIME, TimeUnit.SECONDS);
+        map.expire(Constants.REDIS_KEY_EXPIRE_TIME, TimeUnit.SECONDS);
         return Constants.SUCCESS;
     }
 
@@ -164,7 +158,7 @@ public class OnlineStatusServer {
         removeExpiredClients(map, now());
         map.remove(clientId);
         map.clearExpire();
-        map.expire(EXPIRE_TIME, TimeUnit.SECONDS);
+        map.expire(Constants.REDIS_KEY_EXPIRE_TIME, TimeUnit.SECONDS);
 
         return Constants.SUCCESS;
     }
@@ -180,7 +174,7 @@ public class OnlineStatusServer {
 
     private boolean checkExpires(RBucket<Date> bucket, Date currentDate) {
         long diff = currentDate.getTime() - bucket.get().getTime();
-        return (diff / 1000) >= EXPIRE_TIME;
+        return (diff / 1000) >= Constants.REDIS_KEY_EXPIRE_TIME;
     }
 
     /**
