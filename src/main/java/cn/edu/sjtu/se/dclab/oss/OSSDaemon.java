@@ -14,16 +14,14 @@ public class OSSDaemon implements Daemon {
      *
      * @param daemonContext
      * @throws DaemonInitException
-     * @throws Exception
      */
     @Override
-    public void init(DaemonContext daemonContext) throws DaemonInitException, Exception {
+    public void init(DaemonContext daemonContext) throws DaemonInitException {
         LOG.info("Initializing daemon...");
     }
 
     @Override
     public void start() throws Exception {
-        LOG.info("Starting daemon...");
         onlineStatusServer = new OnlineStatusServer();
     }
 

@@ -1,8 +1,11 @@
 package cn.edu.sjtu.se.dclab.oss;
 
+import cn.edu.sjtu.se.dclab.oss.thrift.OSSContent;
 import cn.edu.sjtu.se.dclab.oss.thrift.OnlineStatusQueryService;
 import cn.edu.sjtu.se.dclab.oss.thrift.OnlineStatusQueryServiceImpl;
 import cn.edu.sjtu.se.dclab.oss.util.Constants;
+import cn.edu.sjtu.se.dclab.service_management.Content;
+import cn.edu.sjtu.se.dclab.service_management.ServiceManager;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,10 +24,12 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static cn.edu.sjtu.se.dclab.oss.util.TimeUtil.now;
@@ -53,7 +58,7 @@ public class OnlineStatusServer {
         LOG.info("Initializing redis client...");
         Config conf = new Config();
         conf.useSingleServer()
-            .setAddress("192.168.1.254:6379")
+            .setAddress(Constants.REDIS_SERVER_HOST + ":" + Constants.REDIS_SERVER_PORT)
             .setConnectionPoolSize(Constants.REDIS_CONNECTION_POOL_SIZE);
 
         redisson = Redisson.create(conf);
@@ -67,15 +72,19 @@ public class OnlineStatusServer {
             TProcessor processor = new OnlineStatusQueryService.Processor<>(queryService);
             server = new TThreadPoolServer(new TThreadPoolServer.Args(serverSocket).processor(processor));
             LOG.info("Starting server on port " + Constants.THRIFT_SERVER_PORT);
-            server.serve();
 
             // register service to zookeeper
-            String localIp = InetAddress.getLocalHost().getHostAddress();
+            String ip = NetworkInterface.getByName(Constants.NETWORK_INTERFACE);
+            Content content = new OSSContent(ip, Constants.THRIFT_SERVER_PORT);
+            ServiceManager manager = ServiceManager.getInstance();
+            String serviceName = Constants.THRIFT_SERVER_NAME + "/" + UUID.randomUUID().toString().replace("-", "");
+            manager.registe(serviceName, content, null, null);
 
+            server.serve();
         } catch (UnknownHostException ex) {
-            LOG.debug(ex.getMessage());
+            LOG.info(ex.getMessage());
         } catch (TTransportException ex) {
-            LOG.debug(ex.getMessage());
+            LOG.info(ex.getMessage());
         }
     }
 

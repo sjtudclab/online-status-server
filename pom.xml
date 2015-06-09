@@ -113,6 +113,25 @@
             <artifactId>guava</artifactId>
             <version>16.0.1</version>
         </dependency>
+
+        <!-- zookeeper related dependency -->
+        <dependency>
+            <groupId>cn.edu.sjtu.se.dclab</groupId>
+            <artifactId>service-management</artifactId>
+            <version>0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <version>3.4.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.sgroschupf</groupId>
+            <artifactId>zkclient</artifactId>
+            <version>0.1</version>
+        </dependency>
     </dependencies>
 
     <build>
