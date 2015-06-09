@@ -27,16 +27,16 @@ public class Constants {
 
     public static int THRIFT_SERVER_PORT;
     public static String THRIFT_SERVER_NAME;
+    public static String THRIFT_SERVER_IP;
 
-    public static String NETWORK_INTERFACE;
-
-    static {
+    public static void init(String path) {
         Properties props = new Properties();
         FileInputStream file = null;
         try {
             LOG.debug(System.getenv("CONF_DIR"));
             //file = new FileInputStream(System.getenv("CONF_DIR") + "/application.properties");
-            file = new FileInputStream("/home/francis/projects/online-status-server/src/main/conf/application.properties");
+            //file = new FileInputStream("/home/francis/projects/online-status-server/src/main/conf/application.properties");
+            file = new FileInputStream(path);
             props.load(file);
             file.close();
 
@@ -48,8 +48,9 @@ public class Constants {
             RABBITMQ_SERVER_HOST = props.getProperty("rabbitmq.host", "192.168.1.254");
             RABBITMQ_SERVER_PORT = Integer.parseInt(props.getProperty("rabbitmq.port", "5672"));
 
-            THRIFT_SERVER_PORT = Integer.parseInt(props.getProperty("thrift.port", "6666"));
+            THRIFT_SERVER_PORT = Integer.parseInt(props.getProperty("thrift.server.port", "6666"));
             THRIFT_SERVER_NAME = props.getProperty("thrift.server.name", "online-status-server");
+            THRIFT_SERVER_IP = props.getProperty("thrift.server.ip", "192.168.0.108");
 
             LOG.info("Redis: " + REDIS_SERVER_HOST + ":" + REDIS_SERVER_PORT);
         } catch (FileNotFoundException ex) {

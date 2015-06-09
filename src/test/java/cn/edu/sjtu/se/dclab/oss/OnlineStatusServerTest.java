@@ -10,6 +10,7 @@ public class OnlineStatusServerTest {
 
     @Test
     public void testInitServer() throws Exception {
+        Constants.init("/home/francis/projects/online-status-server/src/main/conf/application.properties");
         OnlineStatusServer server = new OnlineStatusServer();
         System.out.println("Redis port: " + Constants.REDIS_SERVER_HOST);
     }

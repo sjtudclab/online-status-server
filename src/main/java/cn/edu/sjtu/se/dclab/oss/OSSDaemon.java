@@ -1,5 +1,6 @@
 package cn.edu.sjtu.se.dclab.oss;
 
+import cn.edu.sjtu.se.dclab.oss.util.Constants;
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 import org.apache.commons.daemon.DaemonInitException;
@@ -18,6 +19,7 @@ public class OSSDaemon implements Daemon {
     @Override
     public void init(DaemonContext daemonContext) throws DaemonInitException {
         LOG.info("Initializing daemon...");
+        Constants.init(System.getenv("CONF_DIR") + "/application.properties");
     }
 
     @Override

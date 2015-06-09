@@ -25,11 +25,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static cn.edu.sjtu.se.dclab.oss.util.TimeUtil.now;
@@ -74,15 +72,11 @@ public class OnlineStatusServer {
             LOG.info("Starting server on port " + Constants.THRIFT_SERVER_PORT);
 
             // register service to zookeeper
-            String ip = NetworkInterface.getByName(Constants.NETWORK_INTERFACE);
-            Content content = new OSSContent(ip, Constants.THRIFT_SERVER_PORT);
+            Content content = new OSSContent(Constants.THRIFT_SERVER_IP, Constants.THRIFT_SERVER_PORT);
             ServiceManager manager = ServiceManager.getInstance();
-            String serviceName = Constants.THRIFT_SERVER_NAME + "/" + UUID.randomUUID().toString().replace("-", "");
-            manager.registe(serviceName, content, null, null);
+            manager.registe(Constants.THRIFT_SERVER_NAME, UUID.randomUUID().toString().replace("-", ""), content, null, null);
 
             server.serve();
-        } catch (UnknownHostException ex) {
-            LOG.info(ex.getMessage());
         } catch (TTransportException ex) {
             LOG.info(ex.getMessage());
         }
