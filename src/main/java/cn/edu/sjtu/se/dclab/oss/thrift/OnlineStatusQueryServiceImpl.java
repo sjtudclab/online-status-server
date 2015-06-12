@@ -1,5 +1,6 @@
 package cn.edu.sjtu.se.dclab.oss.thrift;
 
+import cn.edu.sjtu.se.dclab.oss.OnlineStatusServer;
 import org.apache.thrift.TException;
 
 /**
@@ -7,10 +8,14 @@ import org.apache.thrift.TException;
  */
 public class OnlineStatusQueryServiceImpl implements OnlineStatusQueryService.Iface {
 
-    public OnlineStatusQueryServiceImpl() {}
+    private OnlineStatusServer onlineStatusServer;
+
+    public OnlineStatusQueryServiceImpl(OnlineStatusServer onlineStatusServer) {
+        this.onlineStatusServer = onlineStatusServer;
+    }
 
     @Override
     public String checkOnline(long userId) throws TException {
-        return "[ \"1111111111\", \"2222222222\" ]";
+        return onlineStatusServer.query(String.valueOf(userId));
     }
 }

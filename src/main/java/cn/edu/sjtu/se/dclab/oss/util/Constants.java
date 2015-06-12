@@ -22,8 +22,12 @@ public class Constants {
     public static int REDIS_CONNECTION_POOL_SIZE;
     public static int REDIS_KEY_EXPIRE_TIME;
 
-    public static String RABBITMQ_SERVER_HOST;
-    public static int RABBITMQ_SERVER_PORT;
+    public static String RABBITMQ_HOST;
+    public static int RABBITMQ_PORT;
+    public static String RABBITMQ_USERNAME;
+    public static String RABBITMQ_PASSWORD;
+    public static String RABBITMQ_VHOST;
+    public static String RABBITMQ_QUEUE_NAME;
 
     public static int THRIFT_SERVER_PORT;
     public static String THRIFT_SERVER_NAME;
@@ -33,7 +37,6 @@ public class Constants {
         Properties props = new Properties();
         FileInputStream file = null;
         try {
-            LOG.debug(System.getenv("CONF_DIR"));
             //file = new FileInputStream(System.getenv("CONF_DIR") + "/application.properties");
             //file = new FileInputStream("/home/francis/projects/online-status-server/src/main/conf/application.properties");
             file = new FileInputStream(path);
@@ -45,12 +48,16 @@ public class Constants {
             REDIS_CONNECTION_POOL_SIZE = Integer.parseInt(props.getProperty("redis.pool", "10"));
             REDIS_KEY_EXPIRE_TIME = Integer.parseInt(props.getProperty("redis.key.expire.time", "600"));
 
-            RABBITMQ_SERVER_HOST = props.getProperty("rabbitmq.host", "192.168.1.254");
-            RABBITMQ_SERVER_PORT = Integer.parseInt(props.getProperty("rabbitmq.port", "5672"));
+            RABBITMQ_HOST = props.getProperty("rabbitmq.host", "192.168.1.254");
+            RABBITMQ_PORT = Integer.parseInt(props.getProperty("rabbitmq.port", "5672"));
+            RABBITMQ_USERNAME = props.getProperty("rabbitmq.username", "test");
+            RABBITMQ_PASSWORD = props.getProperty("rabbitmq.password", "test");
+            RABBITMQ_VHOST = props.getProperty("rabbitmq.vhost", "/");
+            RABBITMQ_QUEUE_NAME = props.getProperty("rabbitmq.queue.name", "ONLINE_STATUS_QUEUE");
 
             THRIFT_SERVER_PORT = Integer.parseInt(props.getProperty("thrift.server.port", "6666"));
             THRIFT_SERVER_NAME = props.getProperty("thrift.server.name", "online-status-server");
-            THRIFT_SERVER_IP = props.getProperty("thrift.server.ip", "192.168.0.108");
+            THRIFT_SERVER_IP = props.getProperty("thrift.server.ip", "192.168.1.3");
 
             LOG.info("Redis: " + REDIS_SERVER_HOST + ":" + REDIS_SERVER_PORT);
         } catch (FileNotFoundException ex) {
