@@ -8,14 +8,14 @@ import org.apache.thrift.TException;
  */
 public class OnlineStatusQueryServiceImpl implements OnlineStatusQueryService.Iface {
 
-    private OnlineStatusServer onlineStatusServer;
+    private final OnlineStatusServer onlineStatusServer;
 
     public OnlineStatusQueryServiceImpl(OnlineStatusServer onlineStatusServer) {
         this.onlineStatusServer = onlineStatusServer;
     }
 
     @Override
-    public String checkOnline(long userId) throws TException {
-        return onlineStatusServer.query(String.valueOf(userId));
+    public String checkOnline(String userId) throws TException {
+        return onlineStatusServer.query(userId);
     }
 }

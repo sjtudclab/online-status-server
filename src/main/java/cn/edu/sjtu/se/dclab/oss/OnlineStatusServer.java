@@ -1,7 +1,6 @@
 package cn.edu.sjtu.se.dclab.oss;
 
 import cn.edu.sjtu.se.dclab.oss.rabbitmq.WorkQueueConsumer;
-import cn.edu.sjtu.se.dclab.oss.redis.ClientLastSeenTime;
 import cn.edu.sjtu.se.dclab.oss.thrift.OSSContent;
 import cn.edu.sjtu.se.dclab.oss.thrift.OnlineStatusQueryService;
 import cn.edu.sjtu.se.dclab.oss.thrift.OnlineStatusQueryServiceImpl;
@@ -10,13 +9,11 @@ import cn.edu.sjtu.se.dclab.service_management.Content;
 import cn.edu.sjtu.se.dclab.service_management.ServiceManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.apache.thrift.TProcessor;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TThreadPoolServer;
 import org.apache.thrift.transport.TServerSocket;
 import org.redisson.Config;
 import org.redisson.Redisson;
-import org.redisson.core.RBucket;
 import org.redisson.core.RMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,8 +66,10 @@ public class OnlineStatusServer {
     private void initThriftServer() throws Exception {
         LOG.info("Initializing thrift server...");
         // init & start thrift server
+        queryService = new OnlineStatusQueryServiceImpl(this);
         TServerSocket serverSocket = new TServerSocket(Constants.THRIFT_SERVER_PORT);
-        TProcessor processor = new OnlineStatusQueryService.Processor<>(queryService);
+        OnlineStatusQueryService.Processor<OnlineStatusQueryServiceImpl> processor =
+            new OnlineStatusQueryService.Processor<>(queryService);
         server = new TThreadPoolServer(new TThreadPoolServer.Args(serverSocket).processor(processor));
         LOG.info("Starting server on port " + Constants.THRIFT_SERVER_PORT);
 
@@ -90,7 +89,7 @@ public class OnlineStatusServer {
     }
 
     public String query(String userId) {
-        RMap<String, RBucket<Date>> map = redisson.getMap(userId);
+        RMap<String, Date> map = redisson.getMap(userId);
         Collection<String> clients = map.keySet();
 
         ObjectMapper mapper = new ObjectMapper();
@@ -104,17 +103,16 @@ public class OnlineStatusServer {
 
     public String notifyOnline(String userId, String clientId) {
         Date now = now();
-        ClientLastSeenTime client = new ClientLastSeenTime(clientId, now);
-        RMap<String, ClientLastSeenTime> map = redisson.getMap(userId);
+        RMap<String, Date> map = redisson.getMap(userId);
         removeExpiredClients(map, now);
-        map.put(userId, client);
+        map.put(clientId, now());
         map.clearExpire();
         map.expire(Constants.REDIS_KEY_EXPIRE_TIME, TimeUnit.SECONDS);
         return Constants.SUCCESS;
     }
 
     public String notifyOffline(String userId, String clientId) {
-        RMap<String, ClientLastSeenTime> map = redisson.getMap(userId);
+        RMap<String, Date> map = redisson.getMap(userId);
         removeExpiredClients(map, now());
         map.remove(clientId);
         map.clearExpire();
@@ -123,8 +121,8 @@ public class OnlineStatusServer {
         return Constants.SUCCESS;
     }
 
-    private void removeExpiredClients(RMap<String, ClientLastSeenTime> map, Date date) {
-        for (Map.Entry<String, ClientLastSeenTime> entry : map.entrySet()) {
+    private void removeExpiredClients(RMap<String, Date> map, Date date) {
+        for (Map.Entry<String, Date> entry : map.entrySet()) {
             boolean expired = checkExpires(entry.getValue(), date);
             if (expired) {
                 map.remove(entry.getKey());
@@ -132,8 +130,8 @@ public class OnlineStatusServer {
         }
     }
 
-    private boolean checkExpires(ClientLastSeenTime client, Date currentDate) {
-        long diff = currentDate.getTime() - client.getDate().getTime();
+    private boolean checkExpires(Date date, Date currentDate) {
+        long diff = currentDate.getTime() - date.getTime();
         return (diff / 1000) >= Constants.REDIS_KEY_EXPIRE_TIME;
     }
 
