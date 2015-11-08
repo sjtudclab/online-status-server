@@ -1,12 +1,13 @@
-package cn.edu.sjtu.se.dclab.oss.thrift;
+package cn.edu.sjtu.se.dclab.oss.dubbo;
+
 
 import cn.edu.sjtu.se.dclab.oss.OnlineStatusServer;
-import org.apache.thrift.TException;
+
 
 /**
  * Created by francis on 6/8/15.
  */
-public class OnlineStatusQueryServiceImpl implements OnlineStatusQueryService.Iface {
+public class OnlineStatusQueryServiceImpl implements OnlineStatusQueryService{
 
     private final OnlineStatusServer onlineStatusServer;
 
@@ -15,7 +16,7 @@ public class OnlineStatusQueryServiceImpl implements OnlineStatusQueryService.If
     }
 
     @Override
-    public String checkOnline(String userId) throws TException {
+    public String checkOnline(String userId) {
         return onlineStatusServer.query(userId);
     }
 }

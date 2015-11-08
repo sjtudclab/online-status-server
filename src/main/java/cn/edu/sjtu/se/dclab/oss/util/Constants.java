@@ -17,22 +17,101 @@ public class Constants {
     public static final String SUCCESS = "success";
     public static final String ERROR = "error";
 
-    public static String REDIS_SERVER_HOST;
-    public static String REDIS_SERVER_PORT;
-    public static int REDIS_CONNECTION_POOL_SIZE;
-    public static int REDIS_KEY_EXPIRE_TIME;
+    private String redisServerHost;
+    private String redisServerPort;
+    private int redisConnectionPoolSize;
+    private int redisKeyExpireTime;
 
-    public static String RABBITMQ_HOST;
-    public static int RABBITMQ_PORT;
-    public static String RABBITMQ_USERNAME;
-    public static String RABBITMQ_PASSWORD;
-    public static String RABBITMQ_VHOST;
-    public static String RABBITMQ_QUEUE_NAME;
+    private String rabbitmqHost;
+    private int rabbitmqPort;
+    private String rabbitmqUsername;
+    private String rabbitmqPassword;
+    private String rabbitmqVhost;
+    private String rabbitmqQueueName;
 
-    public static int THRIFT_SERVER_PORT;
-    public static String THRIFT_SERVER_NAME;
-    public static String THRIFT_SERVER_IP;
+    public String getRedisServerHost() {
+        return redisServerHost;
+    }
 
+    public void setRedisServerHost(String redisServerHost) {
+        this.redisServerHost = redisServerHost;
+    }
+
+    public String getRedisServerPort() {
+        return redisServerPort;
+    }
+
+    public void setRedisServerPort(String redisServerPort) {
+        this.redisServerPort = redisServerPort;
+    }
+
+    public int getRedisConnectionPoolSize() {
+        return redisConnectionPoolSize;
+    }
+
+    public void setRedisConnectionPoolSize(int redisConnectionPoolSize) {
+        this.redisConnectionPoolSize = redisConnectionPoolSize;
+    }
+
+    public int getRedisKeyExpireTime() {
+        return redisKeyExpireTime;
+    }
+
+    public void setRedisKeyExpireTime(int redisKeyExpireTime) {
+        this.redisKeyExpireTime = redisKeyExpireTime;
+    }
+
+    public String getRabbitmqHost() {
+        return rabbitmqHost;
+    }
+
+    public void setRabbitmqHost(String rabbitmqHost) {
+        this.rabbitmqHost = rabbitmqHost;
+    }
+
+    public int getRabbitmqPort() {
+        return rabbitmqPort;
+    }
+
+    public void setRabbitmqPort(int rabbitmqPort) {
+        this.rabbitmqPort = rabbitmqPort;
+    }
+
+    public String getRabbitmqUsername() {
+        return rabbitmqUsername;
+    }
+
+    public void setRabbitmqUsername(String rabbitmqUsername) {
+        this.rabbitmqUsername = rabbitmqUsername;
+    }
+
+    public String getRabbitmqPassword() {
+        return rabbitmqPassword;
+    }
+
+    public void setRabbitmqPassword(String rabbitmqPassword) {
+        this.rabbitmqPassword = rabbitmqPassword;
+    }
+
+    public String getRabbitmqVhost() {
+        return rabbitmqVhost;
+    }
+
+    public void setRabbitmqVhost(String rabbitmqVhost) {
+        this.rabbitmqVhost = rabbitmqVhost;
+    }
+
+    public String getRabbitmqQueueName() {
+        return rabbitmqQueueName;
+    }
+
+    public void setRabbitmqQueueName(String rabbitmqQueueName) {
+        this.rabbitmqQueueName = rabbitmqQueueName;
+    }
+
+
+
+    /*
     public static void init(String path) {
         Properties props = new Properties();
         FileInputStream file = null;
@@ -75,4 +154,5 @@ public class Constants {
             file = null;
         }
     }
+    */
 }

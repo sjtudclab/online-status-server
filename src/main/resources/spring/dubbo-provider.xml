@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:application name="online-status-service" />
+
+    <!-- zookeeper注册中心 -->
+    <dubbo:registry protocol="zookeeper" address="192.168.1.108:2181" />
+    <!-- 使用multicast广播注册中心暴露服务地址 -->
+    <!-- <dubbo:registry address="multicast://10.57.41.19:1234" /> -->
+    <dubbo:protocol name="dubbo" port="20880" />
+
+    <dubbo:service ref="OnlineStatusQueryService"
+                   interface="cn.edu.sjtu.se.dclab.oss.dubbo.OnlineStatusQueryService" />
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location">
+            <value>classpath:application.properties</value>
+        </property>
+    </bean>
+
+    <bean id="Constants" class="cn.edu.sjtu.se.dclab.oss.util.Constants">
+        <property name="redisConnectionPoolSize" value="${redis.pool}" />
+        <property name="redisKeyExpireTime" value="${redis.key.expire.time}" />
+        <property name="redisServerHost" value="${redis.host}" />
+        <property name="redisServerPort" value="${redis.port}" />
+
+        <property name="rabbitmqHost" value="${rabbitmq.host}" />
+        <property name="rabbitmqPassword" value="${rabbitmq.password}" />
+        <property name="rabbitmqPort" value="${rabbitmq.port}" />
+        <property name="rabbitmqQueueName" value="${rabbitmq.queue.name}" />
+        <property name="rabbitmqUsername" value="${rabbitmq.username}" />
+        <property name="rabbitmqVhost" value="${rabbitmq.vhost}" />
+
+    </bean>
+
+    <bean id="OnlineStatusServer" class="cn.edu.sjtu.se.dclab.oss.OnlineStatusServer">
+        <constructor-arg index="0" ref="Constants" />
+    </bean>
+
+    <bean id="OnlineStatusQueryService"
+          class="cn.edu.sjtu.se.dclab.oss.dubbo.OnlineStatusQueryServiceImpl">
+        <constructor-arg index="0" ref="OnlineStatusServer" />
+    </bean>
+    <!--
+    <dubbo:service interface="com.ruishenh.dubbo.example.DemoService"
+                   ref="demoService" />
+    <bean id="demoService" class="com.ruishenh.dubbo.example.DemoServiceImpl" />
+    -->
+</beans>

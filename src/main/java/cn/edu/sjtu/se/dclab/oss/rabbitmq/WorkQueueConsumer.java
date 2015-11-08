@@ -18,44 +18,52 @@ public class WorkQueueConsumer implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(WorkQueueConsumer.class);
     private static final ConnectionFactory factory = new ConnectionFactory();
 
-    static {
-        factory.setHost(Constants.RABBITMQ_HOST);
-        factory.setPort(Constants.RABBITMQ_PORT);
-        factory.setUsername(Constants.RABBITMQ_USERNAME);
-        factory.setPassword(Constants.RABBITMQ_PASSWORD);
-        factory.setVirtualHost(Constants.RABBITMQ_VHOST);
-    }
-
     private final OnlineStatusServer server;
     private Connection connection;
     private Channel channel;
     private QueueingConsumer consumer;
 
-    public WorkQueueConsumer(OnlineStatusServer server) throws Exception {
+    public WorkQueueConsumer(OnlineStatusServer server, Constants constants) throws Exception {
         this.server = server;
+        try {
+            Connection connection = factory.newConnection();
+            channel = connection.createChannel();
+            LOG.info("Task queue name is: " + constants.getRabbitmqQueueName());
 
-        Connection connection = factory.newConnection();
-        channel = connection.createChannel();
-        LOG.info("Task queue name is: " + Constants.RABBITMQ_QUEUE_NAME);
+            channel.queueDeclare(constants.getRabbitmqQueueName(), true, false, false, null);
+            channel.basicQos(1);
+            LOG.info("WorkQueueConsumer Channel finished.");
+            consumer = new QueueingConsumer(channel);
+            LOG.info("WorkQueueConsumer QueueingConsumer init.");
+            channel.basicConsume(constants.getRabbitmqQueueName(), false, consumer);
+            LOG.info("WorkQueueConsumer QueueingConsumer finished.");
+        } catch(Exception e) {
+            LOG.info(e.getStackTrace().toString());
+        }
 
-        channel.queueDeclare(Constants.RABBITMQ_QUEUE_NAME, true, false, false, null);
-        channel.basicQos(1);
-
-        consumer = new QueueingConsumer(channel);
-        channel.basicConsume(Constants.RABBITMQ_QUEUE_NAME, false, consumer);
     }
 
     @Override
     public void run() {
         while (true) {
             try {
-                QueueingConsumer.Delivery delivery = consumer.nextDelivery();
+                LOG.info("WorkQueueConsumer run");
+                QueueingConsumer.Delivery delivery = null;
+                try{
+                    delivery = consumer.nextDelivery();
+                }catch(Throwable e){
+                    LOG.info("throwable : " + e);
+                }
+
+                LOG.info("WorkQueueConsumer delivery body : " + delivery);
                 String message = new String(delivery.getBody());
 
                 LOG.info("Message received: " + message);
                 processOnlineStatusMessage(message);
                 channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+                LOG.info("WorkQueueConsumer delivery body : " );
             } catch (Exception ex) {
+                LOG.info("WorkQueueConsumer Exception: "+ ex.getStackTrace().toString());
                 LOG.error(ex.getMessage());
             }
         }
@@ -83,6 +91,8 @@ public class WorkQueueConsumer implements Runnable {
             LOG.error(jpe.getMessage());
         } catch (IOException ioe) {
             LOG.error(ioe.getMessage());
+        }catch(Exception e){
+            LOG.info("processOnlineStatusMessage" + e);
         }
     }
 }
