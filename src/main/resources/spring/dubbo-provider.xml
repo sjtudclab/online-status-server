@@ -13,7 +13,7 @@
     <dubbo:registry protocol="zookeeper" address="192.168.1.108:2181" />
     <!-- 使用multicast广播注册中心暴露服务地址 -->
     <!-- <dubbo:registry address="multicast://10.57.41.19:1234" /> -->
-    <dubbo:protocol name="dubbo" port="20880" />
+    <dubbo:protocol name="dubbo" port="20881" />
 
     <dubbo:service ref="OnlineStatusQueryService"
                    interface="cn.edu.sjtu.se.dclab.oss.dubbo.OnlineStatusQueryService" />
