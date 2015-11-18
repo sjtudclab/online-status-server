@@ -25,6 +25,12 @@ public class WorkQueueConsumer implements Runnable {
 
     public WorkQueueConsumer(OnlineStatusServer server, Constants constants) throws Exception {
         this.server = server;
+        factory.setUsername(constants.getRabbitmqUsername());
+        factory.setPassword(constants.getRabbitmqPassword());
+        factory.setVirtualHost(constants.getRabbitmqVhost());
+        factory.setHost(constants.getRabbitmqHost());
+        factory.setPort(constants.getRabbitmqPort());
+
         try {
             Connection connection = factory.newConnection();
             channel = connection.createChannel();
